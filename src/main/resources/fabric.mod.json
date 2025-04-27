@@ -2,8 +2,8 @@
 	"schemaVersion": 1,
 	"id": "tinychunkloader",
 	"version": "${version}",
-	"name": "BTA tiny chunk loader mod",
-	"description": "Keep your chunk loaded",
+	"name": "Tiny ChunkLoader",
+	"description": "Add chunk loader to keep your chunk loaded in a 3x3 area",
 	"authors": [
 		"gungun974"
 	],
@@ -36,7 +36,8 @@
 	],
 	"depends": {
 		"minecraft": "*",
-		"fabricloader": ">=0.15.5"
+		"fabricloader": ">=0.15.5",
+		"halplibe": ">=5.2.4"
 	},
 	"suggests": {
 	}
