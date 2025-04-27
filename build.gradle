@@ -5,7 +5,7 @@ plugins {
 
 import org.gradle.internal.os.OperatingSystem
 
-project.ext.lwjglVersion = "3.3.3"
+project.ext.lwjglVersion = "3.3.2"
 
 switch (OperatingSystem.current()) {
 	case OperatingSystem.LINUX:
@@ -103,6 +103,8 @@ dependencies {
 	implementation("org.apache.logging.log4j:log4j-core:${log4jVersion}")
 	implementation("org.apache.logging.log4j:log4j-api:${log4jVersion}")
 	implementation("org.apache.logging.log4j:log4j-1.2-api:${log4jVersion}")
+
+	implementation(project(path: ":cc-bta", configuration: "namedElements"))
 
 	include(implementation("org.apache.commons:commons-lang3:3.12.0"))
 

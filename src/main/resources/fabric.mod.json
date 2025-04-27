@@ -1,44 +1,41 @@
 {
-  "schemaVersion": 1,
-  "id": "examplemod",
-  "version": "${version}",
-
-  "name": "Example Mod",
-  "description": "This mod aims to help new BTA modders.",
-  "authors": [
-    "Turnip Labs"
-  ],
-  "contact": {
-    "homepage": "",
-    "sources": ""
-  },
-
+	"schemaVersion": 1,
+	"id": "bta-cc-chunkloader-addon",
+	"version": "${version}",
+	"name": "BTA CC Chunkloader Addon",
+	"description": "Keep turtle loaded",
+	"authors": [
+		"gungun974"
+	],
+	"contact": {
+		"homepage": "",
+		"sources": ""
+	},
 	"icon": "icon.png",
-  "license": "CC0-1.0",
-
-  "environment": "*",
-  "entrypoints": {
-    "main": [
-			"turniplabs.examplemod.ExampleMod"
-    ],
+	"license": "CC0-1.0",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"gungun974.chunkloaderAddon.ChunkloaderAddon"
+		],
 		"beforeGameStart": [
-			"turniplabs.examplemod.ExampleMod"
+			"gungun974.chunkloaderAddon.ChunkloaderAddon"
 		],
 		"afterGameStart": [
-			"turniplabs.examplemod.ExampleMod"
+			"gungun974.chunkloaderAddon.ChunkloaderAddon"
 		],
 		"recipesReady": [
-			"turniplabs.examplemod.ExampleMod"
+			"gungun974.chunkloaderAddon.ChunkloaderAddon"
 		]
 	},
-  "mixins": [
-      "examplemod.mixins.json"
-  ],
-
-  "depends": {
+	"mixins": [
+		"chunkloader.mixins.json"
+	],
+	"depends": {
 		"minecraft": "*",
-    "fabricloader": ">=0.15.5"
-  },
-  "suggests": {
-  }
+		"fabricloader": ">=0.15.5",
+		"computercraft": ">=7.3_1.96.7"
+	},
+	"suggests": {
+	}
 }
