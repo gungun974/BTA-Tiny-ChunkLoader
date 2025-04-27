@@ -8,7 +8,7 @@ import turniplabs.halplibe.util.GameStartEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
 
 
-public class TinyChunkLoader implements ModInitializer, RecipeEntrypoint, GameStartEntrypoint {
+public class TinyChunkLoader implements ModInitializer, GameStartEntrypoint {
     public static final String MOD_ID = "tinychunkloader";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
@@ -19,16 +19,6 @@ public class TinyChunkLoader implements ModInitializer, RecipeEntrypoint, GameSt
 		TinyChunkLoaderBlocks.RegisterBlocks();
         LOGGER.info("TinyChunkLoader initialized.");
     }
-
-	@Override
-	public void onRecipesReady() {
-
-	}
-
-	@Override
-	public void initNamespaces() {
-
-	}
 
 	@Override
 	public void beforeGameStart() {

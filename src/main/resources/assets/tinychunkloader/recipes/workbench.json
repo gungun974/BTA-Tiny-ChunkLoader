@@ -1,0 +1,43 @@
+[
+  {
+    "name": "computercraft:workbench/computer_advanced",
+    "type": "minecraft:crafting/shaped",
+    "pattern": [
+      "I#I",
+      "#M#",
+      "I#I"
+    ],
+    "symbols": [
+      {
+        "symbol": "I",
+        "stack": {
+          "key": "item.ingot.steel",
+          "amount": 1,
+          "meta": 0
+        }
+      },
+      {
+        "symbol": "M",
+        "stack": {
+          "key": "tile.motionsensor.idle",
+          "amount": 1,
+          "meta": 0
+        }
+      },
+      {
+        "symbol": "#",
+        "stack": {
+          "key": "tile.obsidian",
+          "amount": 1,
+          "meta": 0
+        }
+      }
+    ],
+    "result": {
+      "key": "tile.tinychunkloader.chunkloader",
+      "amount": 1,
+      "meta": 0
+    },
+    "consumeContainers": false
+  }
+]

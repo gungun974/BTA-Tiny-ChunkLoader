@@ -28,7 +28,7 @@
 			"gungun974.tinychunkloader.core.TinyChunkLoader"
 		],
 		"recipesReady": [
-			"gungun974.tinychunkloader.core.TinyChunkLoader"
+			"gungun974.tinychunkloader.core.TinyChunkLoaderRecipe"
 		]
 	},
 	"mixins": [
