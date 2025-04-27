@@ -34,7 +34,7 @@
 	"depends": {
 		"minecraft": "*",
 		"fabricloader": ">=0.15.5",
-		"computercraft": ">=7.3_1.96.7"
+		"computercraft": ">=7.3_1.96.8"
 	},
 	"suggests": {
 	}

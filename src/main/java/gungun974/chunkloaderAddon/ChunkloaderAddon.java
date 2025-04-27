@@ -32,6 +32,6 @@ public class ChunkloaderAddon implements ModInitializer, RecipeEntrypoint, GameS
 
 	@Override
 	public void afterGameStart() {
-
+		ChunkloaderTurtleUpgrades.registerTurtleUpgrades();
 	}
 }
