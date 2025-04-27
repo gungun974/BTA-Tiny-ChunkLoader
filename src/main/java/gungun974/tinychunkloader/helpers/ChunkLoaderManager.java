@@ -30,7 +30,11 @@ public class ChunkLoaderManager {
 		return dimensionToLoads;
 	}
 
-	private final Map<Dimension, Map<ChunkCoordinate, Integer>> dimensionToLoads = new HashMap<>();
+	public void setDimensionToLoads(Map<Dimension, Map<ChunkCoordinate, Integer>> dimensionToLoads) {
+		this.dimensionToLoads = dimensionToLoads;
+	}
+
+	private Map<Dimension, Map<ChunkCoordinate, Integer>> dimensionToLoads = new HashMap<>();
 
 	synchronized public void keepChunkLoaded(int chunkX, int chunkZ, World world) {
 		if (EnvironmentHelper.isClientWorld()) {

@@ -4,6 +4,8 @@
   "package": "gungun974.tinychunkloader.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "LevelDataMixin",
+    "SaveHandlerBaseMixin",
     "WorldMixin"
   ],
   "client": [
