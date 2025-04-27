@@ -1,0 +1,4 @@
+tile.tinychunkloader.chunkloader.name=Загрузчик чанка
+tile.tinychunkloader.chunkloader.desc=Мощное устройство способное прогружать зону чанка 3 на 3
+
+upgrade.computercraft.chunkloader.adjective=Плотная
