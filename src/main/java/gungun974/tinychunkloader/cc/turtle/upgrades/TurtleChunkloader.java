@@ -25,7 +25,7 @@ public class TurtleChunkloader extends AbstractTurtleUpgrade {
 
 	@Override
 	public void drawTileUpgrade(Tessellator tessellator, TextureManager textureManager, TileTurtle tileEntity, float angle, @NotNull TurtleSide side, float partialTick) {
-		textureManager.loadTexture("/assets/minecraft/textures/block/block_diamond/side_retro.png").bind();
+		textureManager.loadTexture("/assets/tinychunkloader/textures/block/face.png").bind();
 		tessellator.startDrawingQuads();
 		if (side == TurtleSide.LEFT) {
 			drawUpgradeLeft(tessellator, tileEntity, angle);
@@ -37,7 +37,7 @@ public class TurtleChunkloader extends AbstractTurtleUpgrade {
 
 	@Override
 	public void drawItemUpgrade(Tessellator tessellator, TextureManager textureManager, @NotNull TurtleSide side) {
-		textureManager.loadTexture("/assets/minecraft/textures/block/block_diamond/side_retro.png").bind();
+		textureManager.loadTexture("/assets/tinychunkloader/textures/block/face.png").bind();
 		tessellator.startDrawingQuads();
 		if (side == TurtleSide.LEFT) {
 			drawUpgradeLeft(tessellator);
@@ -49,7 +49,7 @@ public class TurtleChunkloader extends AbstractTurtleUpgrade {
 
 	@Override
 	public @NotNull String getUnlocalisedAdjective() {
-		return "upgrade.computercraft.teleport.adjective";
+		return "upgrade.computercraft.chunkloader.adjective";
 	}
 
 	@Override

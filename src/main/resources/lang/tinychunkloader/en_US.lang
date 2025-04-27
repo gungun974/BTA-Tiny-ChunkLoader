@@ -1,0 +1,4 @@
+tile.tinychunkloader.chunkloader.name=Chunk Loader
+tile.tinychunkloader.chunkloader.desc=A powerful thing capable of keeping alive a 3x3 chunk area.
+
+upgrade.computercraft.chunkloader.adjective=Chunky
