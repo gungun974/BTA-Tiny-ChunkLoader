@@ -4,6 +4,7 @@
   "package": "gungun974.tinychunkloader.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "ItemToolPickaxeMixin",
     "LevelDataMixin",
     "SaveHandlerBaseMixin",
     "WorldMixin"

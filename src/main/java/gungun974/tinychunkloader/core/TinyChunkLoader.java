@@ -27,6 +27,14 @@ public class TinyChunkLoader implements ModInitializer, GameStartEntrypoint {
 
 	@Override
 	public void afterGameStart() {
+		try {
+			Class.forName("dan200.computercraft.api.ComputerCraftAPI");
+			registerTurtleUpgrades();
+		} catch (ClassNotFoundException ignored) {
+		}
+	}
+
+	private void registerTurtleUpgrades() {
 		TinyChunkLoaderTurtleUpgrades.registerTurtleUpgrades();
 	}
 }

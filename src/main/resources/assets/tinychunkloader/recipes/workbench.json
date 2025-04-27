@@ -1,6 +1,6 @@
 [
   {
-    "name": "computercraft:workbench/computer_advanced",
+    "name": "tinychunkloader:workbench/chunkloader",
     "type": "minecraft:crafting/shaped",
     "pattern": [
       "I#I",

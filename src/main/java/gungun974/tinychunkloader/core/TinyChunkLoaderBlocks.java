@@ -26,9 +26,10 @@ public class TinyChunkLoaderBlocks {
 		EntityHelper.createTileEntity(TileEntityChunkloader.class, NamespaceID.getPermanent(MOD_ID, "chunkloader"));
 
 		CHUNKLOADER = new BlockBuilder(MOD_ID)
-			.setHardness(10.0F)
+			.setHardness(1.0F)
 			.setResistance(2000.0F)
 			.setTags(BlockTags.MINEABLE_BY_AXE)
+			.setImmovable()
 			.setTileEntity(TileEntityChunkloader::new)
 			.setBlockSound(BlockSounds.METAL)
 			.build("chunkloader", generateNexId(), b -> new BlockLogic(b, Material.metal));
