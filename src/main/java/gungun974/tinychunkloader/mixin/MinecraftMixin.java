@@ -1,4 +1,4 @@
-package gungun974.chunkloaderAddon.mixin;
+package gungun974.tinychunkloader.mixin;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.chunk.provider.ChunkProviderDynamic;

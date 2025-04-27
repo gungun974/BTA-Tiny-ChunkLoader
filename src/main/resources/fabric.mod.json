@@ -1,9 +1,9 @@
 {
 	"schemaVersion": 1,
-	"id": "bta-cc-chunkloader-addon",
+	"id": "tinychunkloader",
 	"version": "${version}",
-	"name": "BTA CC Chunkloader Addon",
-	"description": "Keep turtle loaded",
+	"name": "BTA tiny chunk loader mod",
+	"description": "Keep your chunk loaded",
 	"authors": [
 		"gungun974"
 	],
@@ -16,16 +16,19 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"gungun974.chunkloaderAddon.ChunkloaderAddon"
+			"gungun974.tinychunkloader.core.TinyChunkLoader"
+		],
+		"initModels": [
+			"gungun974.tinychunkloader.core.TinyChunkLoaderModels"
 		],
 		"beforeGameStart": [
-			"gungun974.chunkloaderAddon.ChunkloaderAddon"
+			"gungun974.tinychunkloader.core.TinyChunkLoader"
 		],
 		"afterGameStart": [
-			"gungun974.chunkloaderAddon.ChunkloaderAddon"
+			"gungun974.tinychunkloader.core.TinyChunkLoader"
 		],
 		"recipesReady": [
-			"gungun974.chunkloaderAddon.ChunkloaderAddon"
+			"gungun974.tinychunkloader.core.TinyChunkLoader"
 		]
 	},
 	"mixins": [
@@ -33,8 +36,7 @@
 	],
 	"depends": {
 		"minecraft": "*",
-		"fabricloader": ">=0.15.5",
-		"computercraft": ">=7.3_1.96.8"
+		"fabricloader": ">=0.15.5"
 	},
 	"suggests": {
 	}

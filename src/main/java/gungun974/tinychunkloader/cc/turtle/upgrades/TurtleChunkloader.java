@@ -1,31 +1,21 @@
-package gungun974.chunkloaderAddon.turtle.upgrades;
+package gungun974.tinychunkloader.cc.turtle.upgrades;
 
-import dan200.computercraft.ComputerCraft;
-import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.util.BlockPos;
-import dan200.computercraft.shared.util.PortableTickScheduler;
-import gungun974.chunkloaderAddon.ChunkLoaderManager;
+import gungun974.tinychunkloader.core.TinyChunkLoaderBlocks;
+import gungun974.tinychunkloader.helpers.ChunkLoaderManager;
 import net.minecraft.client.render.TextureManager;
 import net.minecraft.client.render.tessellator.Tessellator;
-import net.minecraft.client.world.chunk.provider.ChunkProviderDynamic;
-import net.minecraft.core.Global;
-import net.minecraft.core.block.Blocks;
-import net.minecraft.core.util.phys.Vec3;
 import net.minecraft.core.world.World;
-import net.minecraft.core.world.chunk.Chunk;
-import net.minecraft.core.world.chunk.ChunkCoordinate;
-import net.minecraft.core.world.chunk.provider.IChunkProvider;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
 public class TurtleChunkloader extends AbstractTurtleUpgrade {
 	public TurtleChunkloader(int id) {
-		super(id, TurtleUpgradeType.PERIPHERAL, Blocks.BLOCK_DIAMOND);
+		super(id, TurtleUpgradeType.PERIPHERAL, TinyChunkLoaderBlocks.CHUNKLOADER);
 	}
 
 	@Override
@@ -107,11 +97,12 @@ public class TurtleChunkloader extends AbstractTurtleUpgrade {
 			int currentChunkX = Math.floorDiv(getPosition().x, 16);
 			int currentChunkZ = Math.floorDiv(getPosition().z, 16);
 
-			ChunkLoaderManager.getInstance().keepChunkLoaded(currentChunkX, currentChunkZ, world);
-			ChunkLoaderManager.getInstance().keepChunkLoaded(currentChunkX + 1, currentChunkZ, world);
-			ChunkLoaderManager.getInstance().keepChunkLoaded(currentChunkX - 1, currentChunkZ, world);
-			ChunkLoaderManager.getInstance().keepChunkLoaded(currentChunkX, currentChunkZ + 1, world);
-			ChunkLoaderManager.getInstance().keepChunkLoaded(currentChunkX, currentChunkZ - 1, world);
+			// 3x3
+			for (int i = -1; i <= 1; i++) {
+				for (int j = -1; j <= 1; j++) {
+					ChunkLoaderManager.getInstance().keepChunkLoaded(currentChunkX + i, currentChunkZ + j, world);
+				}
+			}
 		}
 
 		@Override

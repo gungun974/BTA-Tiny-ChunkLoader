@@ -1,8 +1,7 @@
-package gungun974.chunkloaderAddon;
+package gungun974.tinychunkloader.helpers;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.api.EnvironmentInterface;
 import net.minecraft.client.world.chunk.provider.ChunkProviderDynamic;
 import net.minecraft.core.world.Dimension;
 import net.minecraft.core.world.World;

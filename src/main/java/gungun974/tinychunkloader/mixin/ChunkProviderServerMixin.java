@@ -1,6 +1,6 @@
-package gungun974.chunkloaderAddon.mixin;
+package gungun974.tinychunkloader.mixin;
 
-import gungun974.chunkloaderAddon.ChunkLoaderManager;
+import gungun974.tinychunkloader.helpers.ChunkLoaderManager;
 import net.minecraft.core.world.chunk.ChunkCoordinate;
 import net.minecraft.server.world.WorldServer;
 import net.minecraft.server.world.chunk.provider.ChunkProviderServer;

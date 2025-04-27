@@ -1,5 +1,6 @@
-package gungun974.chunkloaderAddon;
+package gungun974.tinychunkloader.core;
 
+import gungun974.tinychunkloader.cc.turtle.TinyChunkLoaderTurtleUpgrades;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,12 +8,16 @@ import turniplabs.halplibe.util.GameStartEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
 
 
-public class ChunkloaderAddon implements ModInitializer, RecipeEntrypoint, GameStartEntrypoint {
-    public static final String MOD_ID = "bta-cc-chunkloader-addon";
+public class TinyChunkLoader implements ModInitializer, RecipeEntrypoint, GameStartEntrypoint {
+    public static final String MOD_ID = "tinychunkloader";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-    @Override
+
+	public static int startBlockID = 1910;
+
+	@Override
     public void onInitialize() {
-        LOGGER.info("ExampleMod initialized.");
+		TinyChunkLoaderBlocks.RegisterBlocks();
+        LOGGER.info("TinyChunkLoader initialized.");
     }
 
 	@Override
@@ -32,6 +37,6 @@ public class ChunkloaderAddon implements ModInitializer, RecipeEntrypoint, GameS
 
 	@Override
 	public void afterGameStart() {
-		ChunkloaderTurtleUpgrades.registerTurtleUpgrades();
+		TinyChunkLoaderTurtleUpgrades.registerTurtleUpgrades();
 	}
 }

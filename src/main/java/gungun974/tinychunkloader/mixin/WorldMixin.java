@@ -1,6 +1,6 @@
-package gungun974.chunkloaderAddon.mixin;
+package gungun974.tinychunkloader.mixin;
 
-import gungun974.chunkloaderAddon.ChunkLoaderManager;
+import gungun974.tinychunkloader.helpers.ChunkLoaderManager;
 import net.minecraft.core.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
