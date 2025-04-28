@@ -1,0 +1,4 @@
+tile.tinychunkloader.chunkloader.name=Chargeur de chunk
+tile.tinychunkloader.chunkloader.desc=Un objet puissant capable de maintenir en vie une zone de 3x3 chunks.
+
+upgrade.computercraft.chunkloader.adjective=Chunky
