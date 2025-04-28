@@ -112,7 +112,7 @@ public class ChunkLoaderManager {
 	@Environment(EnvType.SERVER)
 	private static void loadChunkForMP(IChunkProvider chunkProvider, ChunkCoordinate coordinate) {
 		if (chunkProvider instanceof ChunkProviderServer) {
-			((ChunkProviderServer) chunkProvider).provideChunk(coordinate.x, coordinate.z);
+			((ChunkProviderServer) chunkProvider).prepareChunk(coordinate.x, coordinate.z);
 		}
 	}
 }
