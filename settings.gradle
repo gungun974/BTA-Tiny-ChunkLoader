@@ -19,6 +19,3 @@ pluginManagement {
 		}
 	}
 }
-
-include 'cc-bta'
-project(":cc-bta").projectDir = file("${rootProject.projectDir}/../BTA-CC-Tweaked")

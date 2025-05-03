@@ -46,6 +46,10 @@ repositories {
 		name = 'SignalumMavenReleases'
 		url = 'https://maven.thesignalumproject.net/releases'
 	}
+	maven {
+		name "SquidDev"
+		url "https://squiddev.cc/maven"
+	}
 	ivy {
 		url = "https://github.com/Better-than-Adventure"
 		patternLayout {
@@ -104,7 +108,7 @@ dependencies {
 	implementation("org.apache.logging.log4j:log4j-api:${log4jVersion}")
 	implementation("org.apache.logging.log4j:log4j-1.2-api:${log4jVersion}")
 
-	implementation(project(path: ":cc-bta", configuration: "namedElements"))
+	modImplementation("gungun974:computercraft:7.3_1.96.8-7.3_01")
 
 	include(implementation("org.apache.commons:commons-lang3:3.12.0"))
 
