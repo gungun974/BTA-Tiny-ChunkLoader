@@ -40,5 +40,6 @@
 		"halplibe": ">=5.2.4"
 	},
 	"suggests": {
+		"computercraft": ">=1.96.9"
 	}
 }
