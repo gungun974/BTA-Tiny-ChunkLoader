@@ -9,9 +9,7 @@
     "SaveHandlerBaseMixin",
     "WorldMixin"
   ],
-  "client": [
-    "MinecraftMixin"
-  ],
+  "client": [],
   "injectors": {
     "defaultRequire": 1
   },
