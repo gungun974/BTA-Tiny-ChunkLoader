@@ -1,8 +1,8 @@
 package gungun974.tinychunkloader.helpers;
 
+import gungun974.tinychunkloader.core.ChunkProviderDynamic2;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.world.chunk.provider.ChunkProviderDynamic;
 import net.minecraft.core.world.Dimension;
 import net.minecraft.core.world.World;
 import net.minecraft.core.world.chunk.ChunkCoordinate;
@@ -90,15 +90,15 @@ public class ChunkLoaderManager {
 
 	@Environment(EnvType.CLIENT)
 	private static void unloadChunkForSP(IChunkProvider chunkProvider, ChunkCoordinate coordinate) {
-		if (chunkProvider instanceof ChunkProviderDynamic) {
-			((ChunkProviderDynamic) chunkProvider).removeFromForceLoaded(coordinate.x, coordinate.z);
+		if (chunkProvider instanceof ChunkProviderDynamic2) {
+			((ChunkProviderDynamic2) chunkProvider).removeFromForceLoaded(coordinate.x, coordinate.z);
 		}
 	}
 
 	@Environment(EnvType.CLIENT)
 	private static void loadChunkForSP(IChunkProvider chunkProvider, ChunkCoordinate coordinate) {
-		if (chunkProvider instanceof ChunkProviderDynamic) {
-			((ChunkProviderDynamic) chunkProvider).keepLoaded(coordinate.x, coordinate.z);
+		if (chunkProvider instanceof ChunkProviderDynamic2) {
+			((ChunkProviderDynamic2) chunkProvider).keepLoaded(coordinate.x, coordinate.z);
 		}
 	}
 
