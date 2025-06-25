@@ -1,11 +1,11 @@
 plugins {
-	id 'fabric-loom' version '1.7.bta'
+	id 'fabric-loom' version '1.10.0-bta'
 	id 'java'
 }
 
 import org.gradle.internal.os.OperatingSystem
 
-project.ext.lwjglVersion = "3.3.2"
+project.ext.lwjglVersion = "3.3.3"
 
 switch (OperatingSystem.current()) {
 	case OperatingSystem.LINUX:
