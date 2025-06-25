@@ -50,15 +50,19 @@ public class TileEntityChunkloader extends TileEntity {
 
 		boolean totalSuccess = true;
 
-		// 3x3
-		for (int i = -1; i <= 1; i++) {
-			for (int j = -1; j <= 1; j++) {
-				final boolean success = ChunkLoaderManager.getInstance().keepChunkLoaded(currentChunkX + i, currentChunkZ + j, worldObj, owner);
+		if (TinyChunkLoader.ENABLE_CHUNKLOADER_BLOCK) {
+			for (int i = -(TinyChunkLoader.CHUNKLOADER_BLOCK_RANGE - 1); i <= (TinyChunkLoader.CHUNKLOADER_BLOCK_RANGE - 1); i++) {
+				for (int j = -(TinyChunkLoader.CHUNKLOADER_BLOCK_RANGE - 1); j <= (TinyChunkLoader.CHUNKLOADER_BLOCK_RANGE - 1); j++) {
 
-				if (!success) {
-					totalSuccess = false;
+					final boolean success = ChunkLoaderManager.getInstance().keepChunkLoaded(currentChunkX + i, currentChunkZ + j, worldObj, owner);
+
+					if (!success) {
+						totalSuccess = false;
+					}
 				}
 			}
+		} else {
+			totalSuccess = false;
 		}
 
 		this.success = totalSuccess;

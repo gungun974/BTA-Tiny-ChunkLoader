@@ -41,7 +41,9 @@ public class TinyChunkLoaderRecipe implements RecipeEntrypoint {
 	}
 
 	public void load() {
-		DataLoader.loadRecipesFromFile("/assets/tinychunkloader/recipes/workbench.json");
+		if (TinyChunkLoader.ENABLE_CHUNKLOADER_BLOCK_CRAFT) {
+			DataLoader.loadRecipesFromFile("/assets/tinychunkloader/recipes/workbench.json");
+		}
 
 		TinyChunkLoader.LOGGER.info("{} recipes in {} groups.", TINYCHUNKLOADER.getAllRecipes().size(), TINYCHUNKLOADER.size());
 	}

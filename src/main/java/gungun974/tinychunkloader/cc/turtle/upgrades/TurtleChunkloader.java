@@ -14,13 +14,12 @@ import gungun974.tinychunkloader.helpers.ChunkLoaderManager;
 import gungun974.tinychunkloader.helpers.UUIDHelper;
 import net.minecraft.client.render.TextureManager;
 import net.minecraft.client.render.tessellator.Tessellator;
+import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class TurtleChunkloader extends AbstractTurtleUpgrade {
@@ -32,6 +31,15 @@ public class TurtleChunkloader extends AbstractTurtleUpgrade {
 	public IPeripheral createPeripheral(@Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side) {
 		return new TurtleChunkloader.Peripheral(turtle);
 	}
+
+	@Override
+	public boolean isItemSuitable(@Nonnull ItemStack stack) {
+		if (!TinyChunkLoader.ENABLE_CHUNKLOADER_TURTLE_CRAFT) {
+			return false;
+		}
+		return super.isItemSuitable(stack);
+	}
+
 
 	@Override
 	public void drawTileUpgrade(Tessellator tessellator, TextureManager textureManager, TileTurtle tileEntity, float angle, @NotNull TurtleSide side, float partialTick) {
@@ -136,15 +144,18 @@ public class TurtleChunkloader extends AbstractTurtleUpgrade {
 
 			boolean totalSuccess = true;
 
-			// 3x3
-			for (int i = -1; i <= 1; i++) {
-				for (int j = -1; j <= 1; j++) {
-					final boolean success = ChunkLoaderManager.getInstance().keepChunkLoaded(currentChunkX + i, currentChunkZ + j, world, owner);
+			if (TinyChunkLoader.ENABLE_CHUNKLOADER_TURTLE) {
+				for (int i = -(TinyChunkLoader.CHUNKLOADER_TURTLE_RANGE - 1); i <= (TinyChunkLoader.CHUNKLOADER_TURTLE_RANGE - 1); i++) {
+					for (int j = -(TinyChunkLoader.CHUNKLOADER_TURTLE_RANGE - 1); j <= (TinyChunkLoader.CHUNKLOADER_TURTLE_RANGE - 1); j++) {
+						final boolean success = ChunkLoaderManager.getInstance().keepChunkLoaded(currentChunkX + i, currentChunkZ + j, world, owner);
 
-					if (!success) {
-						totalSuccess = false;
+						if (!success) {
+							totalSuccess = false;
+						}
 					}
 				}
+			} else {
+				totalSuccess = false;
 			}
 
 			success = totalSuccess;
@@ -158,7 +169,6 @@ public class TurtleChunkloader extends AbstractTurtleUpgrade {
 
 		@LuaFunction(mainThread = true)
 		public final MethodResult status() throws LuaException {
-
 			HashMap<String, Object> data = new HashMap<>(7);
 			data.put("activated", success);
 

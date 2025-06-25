@@ -2,18 +2,17 @@ package gungun974.tinychunkloader.mixin;
 
 import com.mojang.nbt.tags.*;
 import gungun974.tinychunkloader.core.TileEntityChunkloader;
+import gungun974.tinychunkloader.core.TinyChunkLoader;
 import gungun974.tinychunkloader.core.TinyChunkLoaderBlocks;
 import gungun974.tinychunkloader.helpers.ChunkLoaderManager;
 import net.minecraft.core.block.motion.CarriedBlock;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.entity.vehicle.EntityMinecart;
-import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.util.helper.DamageType;
 import net.minecraft.core.util.helper.UUIDHelper;
 import net.minecraft.core.world.ICarriable;
 import net.minecraft.core.world.World;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -59,6 +58,13 @@ public abstract class EntityMinecartMixin extends Entity {
 				if (!this.world.isClientSide && this.passenger == null && player.isSneaking() && player.getHeldObject() instanceof CarriedBlock) {
 					CarriedBlock carriedBlock = (CarriedBlock) player.getHeldObject();
 					if (carriedBlock.entity instanceof TileEntityChunkloader) {
+
+						if (!TinyChunkLoader.ENABLE_CHUNKLOADER_MINECART_CRAFT) {
+							cir.setReturnValue(false);
+							cir.cancel();
+							return;
+						}
+
 						this.setType((byte) 43);
 						this.setMeta(0);
 
@@ -126,15 +132,18 @@ public abstract class EntityMinecartMixin extends Entity {
 
 		boolean totalSuccess = true;
 
-		// 3x3
-		for (int i = -1; i <= 1; i++) {
-			for (int j = -1; j <= 1; j++) {
-				final boolean success = ChunkLoaderManager.getInstance().keepChunkLoaded(currentChunkX + i, currentChunkZ + j, world, owner);
+		if (TinyChunkLoader.ENABLE_CHUNKLOADER_MINECART) {
+			for (int i = -(TinyChunkLoader.CHUNKLOADER_MINECART_RANGE - 1); i <= (TinyChunkLoader.CHUNKLOADER_MINECART_RANGE - 1); i++) {
+				for (int j = -(TinyChunkLoader.CHUNKLOADER_MINECART_RANGE - 1); j <= (TinyChunkLoader.CHUNKLOADER_MINECART_RANGE - 1); j++) {
+					final boolean success = ChunkLoaderManager.getInstance().keepChunkLoaded(currentChunkX + i, currentChunkZ + j, world, owner);
 
-				if (!success) {
-					totalSuccess = false;
+					if (!success) {
+						totalSuccess = false;
+					}
 				}
 			}
+		} else {
+			totalSuccess = false;
 		}
 
 		this.success = totalSuccess;

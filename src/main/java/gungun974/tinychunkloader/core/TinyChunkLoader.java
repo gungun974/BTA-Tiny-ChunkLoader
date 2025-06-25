@@ -12,11 +12,24 @@ public class TinyChunkLoader implements ModInitializer, GameStartEntrypoint {
 
 	public static int startBlockID = 1910;
 
-	public static final int GLOBAL_CHUNK_LOAD_LIMIT = 1024;
-	public static final int PLAYER_CHUNK_LOAD_LIMIT = 1024;
+	public static int GLOBAL_CHUNK_LOAD_LIMIT = 1024;
+	public static int PLAYER_CHUNK_LOAD_LIMIT = 1024;
+
+	public static boolean ENABLE_CHUNKLOADER_BLOCK = true;
+	public static boolean ENABLE_CHUNKLOADER_MINECART = true;
+	public static boolean ENABLE_CHUNKLOADER_TURTLE = true;
+
+	public static boolean ENABLE_CHUNKLOADER_BLOCK_CRAFT = true;
+	public static boolean ENABLE_CHUNKLOADER_MINECART_CRAFT = true;
+	public static boolean ENABLE_CHUNKLOADER_TURTLE_CRAFT = true;
+
+	public static int CHUNKLOADER_BLOCK_RANGE = 2;
+	public static int CHUNKLOADER_MINECART_RANGE = 2;
+	public static int CHUNKLOADER_TURTLE_RANGE = 2;
 
 	@Override
     public void onInitialize() {
+		TinyChunkLoaderConfig.RegisterConfig();
 		TinyChunkLoaderBlocks.RegisterBlocks();
         LOGGER.info("TinyChunkLoader initialized.");
     }
