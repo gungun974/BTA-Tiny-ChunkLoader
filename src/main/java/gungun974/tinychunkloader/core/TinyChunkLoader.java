@@ -13,7 +13,7 @@ public class TinyChunkLoader implements ModInitializer, GameStartEntrypoint {
 	public static int startBlockID = 1910;
 
 	public static final int GLOBAL_CHUNK_LOAD_LIMIT = 1024;
-	public static final int PLAYER_CHUNK_LOAD_LIMIT = 1024;
+	public static final int PLAYER_CHUNK_LOAD_LIMIT = 10;
 
 	@Override
     public void onInitialize() {

@@ -1,4 +1,11 @@
 tile.tinychunkloader.chunkloader.name=Загрузчик чанка
 tile.tinychunkloader.chunkloader.desc=Мощное устройство способное прогружать зону чанка 3 на 3
 
+chat.tinychunkloader.chunkloader_status.status=This Chunk Loader is %s
+chat.tinychunkloader.chunkloader_status.player_loaded=Player %s is keeping %s chunks loaded out of %s
+chat.tinychunkloader.chunkloader_status.total_loaded=Total loaded chunks: %s out of %s
+
+general.tinychunkloader.activated=Activated
+general.tinychunkloader.deactivated=Deactivated
+
 upgrade.computercraft.chunkloader.adjective=Плотная

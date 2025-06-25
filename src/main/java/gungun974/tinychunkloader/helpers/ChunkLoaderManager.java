@@ -12,17 +12,19 @@ import net.minecraft.server.world.chunk.provider.ChunkProviderServer;
 import turniplabs.halplibe.helper.EnvironmentHelper;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 
 public class ChunkLoaderManager {
 
 	private static ChunkLoaderManager instance;
 	private Map<Dimension, Map<ChunkCoordinate, Integer>> dimensionToLoads = new HashMap<>();
-	private Map<UUID, Map<Dimension, Set<ChunkCoordinate>>> playerDimensionsChunks = new HashMap<>();
+	private final Map<UUID, Map<Dimension, Set<ChunkCoordinate>>> playerDimensionsChunks = new HashMap<>();
 
-	private Map<UUID, Integer> totalPlayerChunkLoaded = new HashMap<>();
+	private final Map<UUID, Integer> totalPlayerChunkLoaded = new HashMap<>();
 
 	private ChunkLoaderManager() {}
+
+	public long stableCurrentTotalLoads = 0;
+	private Map<UUID, Integer> stableTotalPlayerChunkLoaded = new HashMap<>();
 
 	public static synchronized ChunkLoaderManager getInstance() {
 		if (instance == null) {
@@ -55,13 +57,16 @@ public class ChunkLoaderManager {
 			return false;
 		}
 
-		if (totalPlayerChunkLoaded.getOrDefault(owner, 0) + 1 > TinyChunkLoader.PLAYER_CHUNK_LOAD_LIMIT) {
-			return false;
-		}
-
 		ChunkCoordinate coordinate = new ChunkCoordinate(chunkX, chunkZ);
 
 		Map<ChunkCoordinate, Integer> chunkToLoads = dimensionToLoads.getOrDefault(world.dimension, new HashMap<>());
+
+		if (totalPlayerChunkLoaded.getOrDefault(owner, 0) + 1 > TinyChunkLoader.PLAYER_CHUNK_LOAD_LIMIT) {
+			if (chunkToLoads.get(coordinate) == null) {
+				totalPlayerChunkLoaded.put(owner, totalPlayerChunkLoaded.getOrDefault(owner, 0) + 1);
+			}
+			return false;
+		}
 
 		Map<Dimension, Set<ChunkCoordinate>> playerDimensions = playerDimensionsChunks.getOrDefault(owner, new HashMap<>());
 		Set<ChunkCoordinate> playerChunks = playerDimensions.getOrDefault(world.dimension, new HashSet<>());
@@ -91,6 +96,16 @@ public class ChunkLoaderManager {
 		if (EnvironmentHelper.isClientWorld()) {
 			return;
 		}
+
+
+		this.stableCurrentTotalLoads = dimensionToLoads.values().stream().flatMap(m -> m.values().stream()).mapToLong(value -> {
+			if (value == 0) {
+				return 1;
+			}
+			return 0;
+		}).sum();
+
+		this.stableTotalPlayerChunkLoaded = new HashMap<>(totalPlayerChunkLoaded);
 
 		totalPlayerChunkLoaded.forEach((uuid, count) -> totalPlayerChunkLoaded.put(uuid, 0));
 
@@ -158,5 +173,13 @@ public class ChunkLoaderManager {
 		if (chunkProvider instanceof ChunkProviderServer) {
 			((ChunkProviderServer) chunkProvider).prepareChunk(coordinate.x, coordinate.z);
 		}
+	}
+
+	public long getCurrentTotalLoads() {
+		return stableCurrentTotalLoads;
+	}
+
+	public long getCurrentPlayerTotalLoads(UUID player) {
+		return stableTotalPlayerChunkLoaded.get(player);
 	}
 }

@@ -1,4 +1,11 @@
 tile.tinychunkloader.chunkloader.name=Chargeur de chunk
 tile.tinychunkloader.chunkloader.desc=Un objet puissant capable de maintenir en vie une zone de 3x3 chunks.
 
+chat.tinychunkloader.chunkloader_status.status=This Chunk Loader is %s
+chat.tinychunkloader.chunkloader_status.player_loaded=Player %s is keeping %s chunks loaded out of %s
+chat.tinychunkloader.chunkloader_status.total_loaded=Total loaded chunks: %s out of %s
+
+general.tinychunkloader.activated=Activated
+general.tinychunkloader.deactivated=Deactivated
+
 upgrade.computercraft.chunkloader.adjective=Chunky

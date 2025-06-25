@@ -32,7 +32,7 @@ public class TinyChunkLoaderBlocks {
 			.setImmovable()
 			.setTileEntity(TileEntityChunkloader::new)
 			.setBlockSound(BlockSounds.METAL)
-			.build("chunkloader", generateNexId(), b -> new BlockLogic(b, Material.metal));
+			.build("chunkloader", generateNexId(), b -> new BlockLogicChunkloader(b, Material.metal));
 
 	}
 }
