@@ -2,8 +2,10 @@ package gungun974.tinychunkloader.core;
 
 import gungun974.tinychunkloader.cc.turtle.TinyChunkLoaderTurtleUpgrades;
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.core.net.command.CommandManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import turniplabs.halplibe.helper.EnvironmentHelper;
 import turniplabs.halplibe.util.GameStartEntrypoint;
 
 public class TinyChunkLoader implements ModInitializer, GameStartEntrypoint {
@@ -33,6 +35,16 @@ public class TinyChunkLoader implements ModInitializer, GameStartEntrypoint {
 		TinyChunkLoaderBlocks.RegisterBlocks();
         LOGGER.info("TinyChunkLoader initialized.");
     }
+
+	public static void registerServerCommands() {
+		CommandManager.registerCommand(new TinyChunkLoaderCommands());
+	}
+
+	public static void registerClientCommands() {
+		if (EnvironmentHelper.isSinglePlayer()) {
+			CommandManager.registerCommand(new TinyChunkLoaderCommands());
+		}
+	}
 
 	@Override
 	public void beforeGameStart() {

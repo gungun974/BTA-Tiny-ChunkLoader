@@ -182,4 +182,12 @@ public class ChunkLoaderManager {
 	public long getCurrentPlayerTotalLoads(UUID player) {
 		return stableTotalPlayerChunkLoaded.get(player);
 	}
+
+	public Set<UUID> getCurrentPlayers() {
+		return stableTotalPlayerChunkLoaded.keySet();
+	}
+
+	public Map<Dimension, Set<ChunkCoordinate>> getCurrentPlayerChunks(UUID player) {
+		return playerDimensionsChunks.get(player);
+	}
 }
