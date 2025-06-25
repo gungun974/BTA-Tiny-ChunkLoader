@@ -1,18 +1,26 @@
 package gungun974.tinychunkloader.cc.turtle.upgrades;
 
 import com.mojang.nbt.tags.CompoundTag;
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.lua.LuaFunction;
+import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.util.BlockPos;
+import gungun974.tinychunkloader.core.TinyChunkLoader;
 import gungun974.tinychunkloader.core.TinyChunkLoaderBlocks;
 import gungun974.tinychunkloader.helpers.ChunkLoaderManager;
+import gungun974.tinychunkloader.helpers.UUIDHelper;
 import net.minecraft.client.render.TextureManager;
 import net.minecraft.client.render.tessellator.Tessellator;
 import net.minecraft.core.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class TurtleChunkloader extends AbstractTurtleUpgrade {
@@ -145,6 +153,29 @@ public class TurtleChunkloader extends AbstractTurtleUpgrade {
 		@Override
 		public boolean equals(IPeripheral other) {
 			return this == other || (other instanceof Peripheral && turtle == ((Peripheral) other).turtle);
+		}
+
+
+		@LuaFunction(mainThread = true)
+		public final MethodResult status() throws LuaException {
+
+			HashMap<String, Object> data = new HashMap<>(7);
+			data.put("activated", success);
+
+			UUID owner = turtle.getOwningPlayer();
+
+			if (owner != null) {
+				data.put("uuid", owner.toString());
+				data.put("player_name", UUIDHelper.getNameFromUUID(owner));
+				data.put("player", ChunkLoaderManager.getInstance().getCurrentPlayerTotalLoads(owner));
+			}
+
+			data.put("global", ChunkLoaderManager.getInstance().getCurrentTotalLoads());
+
+			data.put("player_max", TinyChunkLoader.PLAYER_CHUNK_LOAD_LIMIT);
+			data.put("global_max", TinyChunkLoader.GLOBAL_CHUNK_LOAD_LIMIT);
+
+			return MethodResult.of(data);
 		}
 	}
 }
