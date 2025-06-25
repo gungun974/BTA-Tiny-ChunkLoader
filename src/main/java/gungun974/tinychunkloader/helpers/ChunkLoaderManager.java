@@ -1,6 +1,7 @@
 package gungun974.tinychunkloader.helpers;
 
 import gungun974.tinychunkloader.core.ChunkProviderDynamic2;
+import gungun974.tinychunkloader.core.TinyChunkLoader;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.world.Dimension;
@@ -10,12 +11,16 @@ import net.minecraft.core.world.chunk.provider.IChunkProvider;
 import net.minecraft.server.world.chunk.provider.ChunkProviderServer;
 import turniplabs.halplibe.helper.EnvironmentHelper;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.function.BiConsumer;
 
 public class ChunkLoaderManager {
 
 	private static ChunkLoaderManager instance;
+	private Map<Dimension, Map<ChunkCoordinate, Integer>> dimensionToLoads = new HashMap<>();
+	private Map<UUID, Map<Dimension, Set<ChunkCoordinate>>> playerDimensionsChunks = new HashMap<>();
+
+	private Map<UUID, Integer> totalPlayerChunkLoaded = new HashMap<>();
 
 	private ChunkLoaderManager() {}
 
@@ -34,16 +39,44 @@ public class ChunkLoaderManager {
 		this.dimensionToLoads = dimensionToLoads;
 	}
 
-	private Map<Dimension, Map<ChunkCoordinate, Integer>> dimensionToLoads = new HashMap<>();
-
-	synchronized public void keepChunkLoaded(int chunkX, int chunkZ, World world) {
+	synchronized public void keepChunkLoaded(int chunkX, int chunkZ, World world, UUID owner) {
 		if (EnvironmentHelper.isClientWorld()) {
+			return;
+		}
+
+		final long totalLoaded = dimensionToLoads.values().stream().flatMap(m -> m.values().stream()).mapToLong(value -> {
+			if (value == 0) {
+				return 1;
+			}
+			return 0;
+		}).sum();
+
+		if (totalLoaded + 1 > TinyChunkLoader.GLOBAL_CHUNK_LOAD_LIMIT) {
+			return;
+		}
+
+		if (totalPlayerChunkLoaded.getOrDefault(owner, 0) + 1 > TinyChunkLoader.PLAYER_CHUNK_LOAD_LIMIT) {
 			return;
 		}
 
 		ChunkCoordinate coordinate = new ChunkCoordinate(chunkX, chunkZ);
 
 		Map<ChunkCoordinate, Integer> chunkToLoads = dimensionToLoads.getOrDefault(world.dimension, new HashMap<>());
+
+		Map<Dimension, Set<ChunkCoordinate>> playerDimensions = playerDimensionsChunks.getOrDefault(owner, new HashMap<>());
+		Set<ChunkCoordinate> playerChunks = playerDimensions.getOrDefault(world.dimension, new HashSet<>());
+
+		if (playerDimensionsChunks.values().stream().map(m -> m.get(world.dimension)).filter(Objects::nonNull).noneMatch(set -> set.contains(coordinate))) {
+			playerChunks.add(coordinate);
+
+			playerDimensions.put(world.dimension, playerChunks);
+
+			playerDimensionsChunks.put(owner, playerDimensions);
+		}
+
+		if (playerChunks.contains(coordinate) && chunkToLoads.getOrDefault(coordinate, -1) != 0) {
+			totalPlayerChunkLoaded.put(owner, totalPlayerChunkLoaded.getOrDefault(owner, 0) + 1);
+		}
 
 		chunkToLoads.put(coordinate, 0);
 
@@ -56,6 +89,8 @@ public class ChunkLoaderManager {
 		if (EnvironmentHelper.isClientWorld()) {
 			return;
 		}
+
+		totalPlayerChunkLoaded.forEach((uuid, count) -> totalPlayerChunkLoaded.put(uuid, 0));
 
 		Map<ChunkCoordinate, Integer> chunkToLoads = dimensionToLoads.getOrDefault(world.dimension, new HashMap<>());
 		Map<ChunkCoordinate, Integer> updatedChunkToLoads = new HashMap<>(chunkToLoads);
@@ -76,6 +111,13 @@ public class ChunkLoaderManager {
 				}
 			} else {
 				updatedChunkToLoads.remove(coordinate);
+
+				playerDimensionsChunks.values().forEach(map -> {
+					Set<ChunkCoordinate> chunks = map.get(world.dimension);
+					if (chunks != null) {
+						chunks.remove(coordinate);
+					}
+				});
 
 				if (EnvironmentHelper.isSinglePlayer()) {
 					unloadChunkForSP(chunkProvider, coordinate);

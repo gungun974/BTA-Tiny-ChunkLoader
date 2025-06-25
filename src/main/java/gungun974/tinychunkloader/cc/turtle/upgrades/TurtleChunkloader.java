@@ -12,6 +12,7 @@ import net.minecraft.core.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.util.UUID;
 
 public class TurtleChunkloader extends AbstractTurtleUpgrade {
 	public TurtleChunkloader(int id) {
@@ -93,6 +94,12 @@ public class TurtleChunkloader extends AbstractTurtleUpgrade {
 		}
 
 		public void updateChunkState() {
+			UUID owner = turtle.getOwningPlayer();
+
+			if (owner == null) {
+				return;
+			}
+
 			World world = getWorld();
 			int currentChunkX = Math.floorDiv(getPosition().x, 16);
 			int currentChunkZ = Math.floorDiv(getPosition().z, 16);
@@ -100,7 +107,7 @@ public class TurtleChunkloader extends AbstractTurtleUpgrade {
 			// 3x3
 			for (int i = -1; i <= 1; i++) {
 				for (int j = -1; j <= 1; j++) {
-					ChunkLoaderManager.getInstance().keepChunkLoaded(currentChunkX + i, currentChunkZ + j, world);
+					ChunkLoaderManager.getInstance().keepChunkLoaded(currentChunkX + i, currentChunkZ + j, world, owner);
 				}
 			}
 		}

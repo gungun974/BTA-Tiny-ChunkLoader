@@ -5,14 +5,15 @@ import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import turniplabs.halplibe.util.GameStartEntrypoint;
-import turniplabs.halplibe.util.RecipeEntrypoint;
-
 
 public class TinyChunkLoader implements ModInitializer, GameStartEntrypoint {
     public static final String MOD_ID = "tinychunkloader";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	public static int startBlockID = 1910;
+
+	public static final int GLOBAL_CHUNK_LOAD_LIMIT = 1024;
+	public static final int PLAYER_CHUNK_LOAD_LIMIT = 1024;
 
 	@Override
     public void onInitialize() {
