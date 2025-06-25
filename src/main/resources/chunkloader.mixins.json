@@ -4,12 +4,14 @@
   "package": "gungun974.tinychunkloader.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "EntityMinecartMixin",
     "ItemToolPickaxeMixin",
     "LevelDataMixin",
     "SaveHandlerBaseMixin",
     "WorldMixin"
   ],
   "client": [
+    "EntityRendererMinecartMixin",
     "MinecraftMixin"
   ],
   "injectors": {

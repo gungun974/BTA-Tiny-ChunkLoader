@@ -96,6 +96,11 @@ public class TileEntityChunkloader extends TileEntity {
 	}
 
 	public boolean onBlockRightClicked(Player player, Side side, double xPlaced, double yPlaced) {
+		showChunkloaderInfo(player, success, owner);
+		return false;
+	}
+
+	public static void showChunkloaderInfo(Player player, boolean success, UUID owner) {
 		I18n i18n = I18n.getInstance();
 
 		player.sendMessage(
@@ -133,8 +138,5 @@ public class TileEntityChunkloader extends TileEntity {
 				TextFormatting.formatted(String.valueOf(TinyChunkLoader.GLOBAL_CHUNK_LOAD_LIMIT), color)
 			)
 		);
-
-
-		return false;
 	}
 }
