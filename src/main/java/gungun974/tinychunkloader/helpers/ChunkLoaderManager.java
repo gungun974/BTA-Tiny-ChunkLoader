@@ -39,9 +39,9 @@ public class ChunkLoaderManager {
 		this.dimensionToLoads = dimensionToLoads;
 	}
 
-	synchronized public void keepChunkLoaded(int chunkX, int chunkZ, World world, UUID owner) {
+	synchronized public boolean keepChunkLoaded(int chunkX, int chunkZ, World world, UUID owner) {
 		if (EnvironmentHelper.isClientWorld()) {
-			return;
+			return false;
 		}
 
 		final long totalLoaded = dimensionToLoads.values().stream().flatMap(m -> m.values().stream()).mapToLong(value -> {
@@ -52,11 +52,11 @@ public class ChunkLoaderManager {
 		}).sum();
 
 		if (totalLoaded + 1 > TinyChunkLoader.GLOBAL_CHUNK_LOAD_LIMIT) {
-			return;
+			return false;
 		}
 
 		if (totalPlayerChunkLoaded.getOrDefault(owner, 0) + 1 > TinyChunkLoader.PLAYER_CHUNK_LOAD_LIMIT) {
-			return;
+			return false;
 		}
 
 		ChunkCoordinate coordinate = new ChunkCoordinate(chunkX, chunkZ);
@@ -81,6 +81,8 @@ public class ChunkLoaderManager {
 		chunkToLoads.put(coordinate, 0);
 
 		dimensionToLoads.put(world.dimension, chunkToLoads);
+
+		return true;
 	}
 
 	static int PING_TIMEOUT = 10;
