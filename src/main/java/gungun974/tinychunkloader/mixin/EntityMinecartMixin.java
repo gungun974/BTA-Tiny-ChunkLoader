@@ -127,18 +127,22 @@ public abstract class EntityMinecartMixin extends Entity {
 			return;
 		}
 
-		int currentChunkX = (int) Math.floor(x / 16);
-		int currentChunkZ = (int) Math.floor(z / 16);
-
 		boolean totalSuccess = true;
 
 		if (TinyChunkLoader.ENABLE_CHUNKLOADER_MINECART) {
-			for (int i = -(TinyChunkLoader.CHUNKLOADER_MINECART_RANGE - 1); i <= (TinyChunkLoader.CHUNKLOADER_MINECART_RANGE - 1); i++) {
-				for (int j = -(TinyChunkLoader.CHUNKLOADER_MINECART_RANGE - 1); j <= (TinyChunkLoader.CHUNKLOADER_MINECART_RANGE - 1); j++) {
-					final boolean success = ChunkLoaderManager.getInstance().keepChunkLoaded(currentChunkX + i, currentChunkZ + j, world, owner);
+			for (int xo = -1; xo <= 1; xo++) {
+				for (int zo = -1; zo <= 1; zo++) {
+					int currentChunkX = (int) Math.floor((x + xo) / 16);
+					int currentChunkZ = (int) Math.floor((z + zo) / 16);
 
-					if (!success) {
-						totalSuccess = false;
+					for (int i = -(TinyChunkLoader.CHUNKLOADER_MINECART_RANGE - 1); i <= (TinyChunkLoader.CHUNKLOADER_MINECART_RANGE - 1); i++) {
+						for (int j = -(TinyChunkLoader.CHUNKLOADER_MINECART_RANGE - 1); j <= (TinyChunkLoader.CHUNKLOADER_MINECART_RANGE - 1); j++) {
+							final boolean success = ChunkLoaderManager.getInstance().keepChunkLoaded(currentChunkX + i, currentChunkZ + j, world, owner);
+
+							if (!success) {
+								totalSuccess = false;
+							}
+						}
 					}
 				}
 			}

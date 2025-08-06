@@ -139,18 +139,23 @@ public class TurtleChunkloader extends AbstractTurtleUpgrade {
 			}
 
 			World world = getWorld();
-			int currentChunkX = Math.floorDiv(getPosition().x, 16);
-			int currentChunkZ = Math.floorDiv(getPosition().z, 16);
 
 			boolean totalSuccess = true;
 
 			if (TinyChunkLoader.ENABLE_CHUNKLOADER_TURTLE) {
-				for (int i = -(TinyChunkLoader.CHUNKLOADER_TURTLE_RANGE - 1); i <= (TinyChunkLoader.CHUNKLOADER_TURTLE_RANGE - 1); i++) {
-					for (int j = -(TinyChunkLoader.CHUNKLOADER_TURTLE_RANGE - 1); j <= (TinyChunkLoader.CHUNKLOADER_TURTLE_RANGE - 1); j++) {
-						final boolean success = ChunkLoaderManager.getInstance().keepChunkLoaded(currentChunkX + i, currentChunkZ + j, world, owner);
+				for (double xo = -1f; xo <= 1f; xo++) {
+					for (double zo = -1f; zo <= 1f; zo++) {
+						int currentChunkX = (int) Math.floor((getPosition().x + xo) / 16);
+						int currentChunkZ = (int) Math.floor((getPosition().z + zo) / 16);
 
-						if (!success) {
-							totalSuccess = false;
+						for (int i = -(TinyChunkLoader.CHUNKLOADER_TURTLE_RANGE - 1); i <= (TinyChunkLoader.CHUNKLOADER_TURTLE_RANGE - 1); i++) {
+							for (int j = -(TinyChunkLoader.CHUNKLOADER_TURTLE_RANGE - 1); j <= (TinyChunkLoader.CHUNKLOADER_TURTLE_RANGE - 1); j++) {
+								final boolean success = ChunkLoaderManager.getInstance().keepChunkLoaded(currentChunkX + i, currentChunkZ + j, world, owner);
+
+								if (!success) {
+									totalSuccess = false;
+								}
+							}
 						}
 					}
 				}

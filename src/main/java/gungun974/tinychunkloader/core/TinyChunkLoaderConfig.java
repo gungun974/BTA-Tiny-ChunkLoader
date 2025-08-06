@@ -26,8 +26,8 @@ public class TinyChunkLoaderConfig {
 		defaultConfig.addEntry("enableChunkloaderTurtleCraft", "Enable craft for the chunk loader turtle",true);
 
 		defaultConfig.addEntry("chunkloaderBlockRange", "Range of the chunk loader block in a square radius (Example: 2 will be a 3x3 loads)",2);
-		defaultConfig.addEntry("chunkloaderMinecartRange", "Range of the chunk loader minecart in a square radius",2);
-		defaultConfig.addEntry("chunkloaderTurtleRange", "Range of the chunk loader turtle in a square radius",2);
+		defaultConfig.addEntry("chunkloaderMinecartRange", "Range of the chunk loader minecart in a square radius",3);
+		defaultConfig.addEntry("chunkloaderTurtleRange", "Range of the chunk loader turtle in a square radius",3);
 
 		config = new TomlConfigHandler(MOD_ID, new Toml("TinyChunkLoader configuration file."),false);
 
@@ -85,12 +85,12 @@ public class TinyChunkLoaderConfig {
 			}
 
 			if(!rawConfig.contains("chunkloaderMinecartRange")){
-				rawConfig.addEntry("chunkloaderMinecartRange", "Range of the chunk loader minecart in a square radius", 2);
+				rawConfig.addEntry("chunkloaderMinecartRange", "Range of the chunk loader minecart in a square radius", 3);
 				changed = true;
 			}
 
 			if(!rawConfig.contains("chunkloaderTurtleRange")){
-				rawConfig.addEntry("chunkloaderTurtleRange", "Range of the chunk loader turtle in a square radius", 2);
+				rawConfig.addEntry("chunkloaderTurtleRange", "Range of the chunk loader turtle in a square radius", 3);
 				changed = true;
 			}
 
