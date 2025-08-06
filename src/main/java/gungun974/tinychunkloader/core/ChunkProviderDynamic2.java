@@ -92,7 +92,7 @@ public class ChunkProviderDynamic2 implements IChunkProvider
 			}
 			chunkMap.put(id, chunk);
 			chunk.onLoad();
-			if(chunk.isTerrainPopulated && isChunkLoaded(chunkX + 1, chunkZ + 1) && isChunkLoaded(chunkX, chunkZ + 1) && isChunkLoaded(chunkX + 1, chunkZ))
+			if(!chunk.isTerrainPopulated && isChunkLoaded(chunkX + 1, chunkZ + 1) && isChunkLoaded(chunkX, chunkZ + 1) && isChunkLoaded(chunkX + 1, chunkZ))
 			{
 				populate(this, chunkX, chunkZ);
 			}
