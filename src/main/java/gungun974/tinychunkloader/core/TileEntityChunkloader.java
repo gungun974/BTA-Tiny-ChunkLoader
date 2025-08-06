@@ -100,6 +100,9 @@ public class TileEntityChunkloader extends TileEntity {
 	}
 
 	public boolean onBlockRightClicked(Player player, Side side, double xPlaced, double yPlaced) {
+		if (EnvironmentHelper.isClientWorld()) {
+			return false;
+		}
 		showChunkloaderInfo(player, success, owner);
 		return false;
 	}
