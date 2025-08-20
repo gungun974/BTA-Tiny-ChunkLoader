@@ -180,7 +180,7 @@ public class ChunkLoaderManager {
 	}
 
 	public long getCurrentPlayerTotalLoads(UUID player) {
-		return stableTotalPlayerChunkLoaded.get(player);
+		return stableTotalPlayerChunkLoaded.getOrDefault(player, 0);
 	}
 
 	public Set<UUID> getCurrentPlayers() {
@@ -188,6 +188,6 @@ public class ChunkLoaderManager {
 	}
 
 	public Map<Dimension, Set<ChunkCoordinate>> getCurrentPlayerChunks(UUID player) {
-		return playerDimensionsChunks.get(player);
+		return playerDimensionsChunks.getOrDefault(player, new HashMap<>());
 	}
 }
