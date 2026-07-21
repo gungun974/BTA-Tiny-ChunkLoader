@@ -25,7 +25,7 @@ public class TileEntityChunkloader extends TileEntity {
 	public void tick() {
 		super.tick();
 
-		if (EnvironmentHelper.isClientWorld()) {
+		if (EnvironmentHelper.isMultiplayerClient()) {
 			return;
 		}
 
@@ -34,7 +34,7 @@ public class TileEntityChunkloader extends TileEntity {
 				return;
 			}
 
-			final Player player = worldObj.getClosestPlayer(x, y, z, 16);
+			final Player player = worldObj.getClosestPlayer(tilePos.x, tilePos.y, tilePos.z, 16);
 
 			if (player == null) {
 				return;
@@ -45,8 +45,8 @@ public class TileEntityChunkloader extends TileEntity {
 			return;
 		}
 
-		int currentChunkX = Math.floorDiv(x, 16);
-		int currentChunkZ = Math.floorDiv(z, 16);
+		int currentChunkX = Math.floorDiv(tilePos.x, 16);
+		int currentChunkZ = Math.floorDiv(tilePos.z, 16);
 
 		boolean totalSuccess = true;
 
@@ -70,37 +70,28 @@ public class TileEntityChunkloader extends TileEntity {
 		if (worldObj != null) {
 			if (!totalSuccess) {
 				if (getBlockMeta() != 1) {
-					worldObj.setBlockMetadataWithNotify(x, y, z, 1);
+					worldObj.setBlockDataNotify(tilePos, 1);
 				}
 			} else {
 				if (getBlockMeta() != 0) {
-					worldObj.setBlockMetadataWithNotify(x, y, z, 0);
+					worldObj.setBlockDataNotify(tilePos, 0);
 				}
 			}
 		}
 	}
 
 	@Override
-	public boolean canBeCarried(World world, Entity potentialHolder) {
-		return true;
-	}
-
-	@Override
-	public void readFromNBT(CompoundTag tag) {
-		super.readFromNBT(tag);
-
+	public void readAdditionalData(CompoundTag tag) {
 		this.owner = UUIDHelper.readFromTag(tag, "OwnerUUID");
 	}
 
 	@Override
-	public void writeToNBT(CompoundTag tag) {
-		super.writeToNBT(tag);
-
+	public void writeAdditionalData(CompoundTag tag) {
 		UUIDHelper.writeToTag(tag, this.owner, "OwnerUUID");
 	}
 
 	public boolean onBlockRightClicked(Player player, Side side, double xPlaced, double yPlaced) {
-		if (EnvironmentHelper.isClientWorld()) {
+		if (EnvironmentHelper.isMultiplayerClient()) {
 			return false;
 		}
 		showChunkloaderInfo(player, success, owner);

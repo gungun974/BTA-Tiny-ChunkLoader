@@ -13,7 +13,7 @@ Work both in Single Player and Multiplayer.
 Requirements:
 
 - BTA (https://www.betterthanadventure.net)
-- Babric for BTA https://github.com/Turnip-Labs/babric-instance-repo/releases/tag/v7.3_04
+- Babric for BTA https://github.com/Turnip-Labs/babric-instance-repo/releases/tag/v8.0
 - HalpLibe (https://github.com/Turnip-Labs/bta-halplibe)
 
 ***Thanks so much to @MartinSVK12 for fixing this mod for Single Player***

@@ -2,30 +2,31 @@ package gungun974.tinychunkloader.mixin;
 
 import com.mojang.nbt.tags.CompoundTag;
 import com.mojang.nbt.tags.ListTag;
-import com.mojang.nbt.tags.Tag;
-import gungun974.tinychunkloader.RememberChunkToLoad;
 import gungun974.tinychunkloader.helpers.ChunkLoaderManager;
 import net.minecraft.core.world.Dimension;
 import net.minecraft.core.world.chunk.ChunkCoordinate;
 import net.minecraft.core.world.save.LevelData;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Mixin(value = LevelData.class, remap = false)
-public class LevelDataMixin implements RememberChunkToLoad {
-	@Inject(method = "updateTagCompound", at = @At("TAIL"))
-	private void updateTagCompoundWithTinyChunkloader(CompoundTag levelTag, CompoundTag playerTag, CallbackInfo ci) {
+public class LevelDataMixin {
+	@Inject(method = "serialize", at = @At("TAIL"))
+	private static void serializeTinyChunkloader(LevelData levelData, CompoundTag out, CallbackInfoReturnable<CompoundTag> cir) {
 		CompoundTag tinyChunkLoaderTag = new CompoundTag();
+		ListTag dimensions = new ListTag();
 
 		Map<Dimension, Map<ChunkCoordinate, Integer>> dimensionsToLoads = ChunkLoaderManager.getInstance().getDimensionToLoads();
 
 		for (Map.Entry<Dimension, Map<ChunkCoordinate, Integer>> dimensionMapEntry : dimensionsToLoads.entrySet()) {
+			CompoundTag dimensionTag = new CompoundTag();
+			dimensionTag.putInt("id", dimensionMapEntry.getKey().id);
+
 			ListTag chunksToLoads = new ListTag();
 
 			for (Map.Entry<ChunkCoordinate, Integer> chunkEntry : dimensionMapEntry.getValue().entrySet()) {
@@ -41,51 +42,50 @@ public class LevelDataMixin implements RememberChunkToLoad {
 				chunksToLoads.addTag(tag);
 			}
 
-
-			tinyChunkLoaderTag.putList(String.valueOf(dimensionMapEntry.getKey().id), chunksToLoads);
+			dimensionTag.putList("chunks", chunksToLoads);
+			dimensions.addTag(dimensionTag);
 		}
 
-		levelTag.putCompound("TinyChunkLoader", tinyChunkLoaderTag);
+		tinyChunkLoaderTag.putList("dimensions", dimensions);
+		out.putCompound("TinyChunkLoader", tinyChunkLoaderTag);
 	}
 
-	@Unique
-	private Map<Dimension, Map<ChunkCoordinate, Integer>> localDimensionsToLoads = new HashMap<>();
+	@Inject(method = "deserialize", at = @At("TAIL"))
+	private static void deserializeTinyChunkloader(CompoundTag tag, CallbackInfoReturnable<LevelData> cir) {
+		Map<Dimension, Map<ChunkCoordinate, Integer>> localDimensionsToLoads = new HashMap<>();
 
-	@Inject(method = "readFromCompoundTag", at = @At("TAIL"))
-	private void readFromCompoundTagWithTinyChunkloader(CompoundTag levelTag, CallbackInfo ci) {
-		CompoundTag tinyChunkLoaderTag = levelTag.getCompound("TinyChunkLoader");
+		if (tag.containsKey("TinyChunkLoader")) {
+			CompoundTag tinyChunkLoaderTag = tag.getCompound("TinyChunkLoader");
+			ListTag dimensions = tinyChunkLoaderTag.getList("dimensions");
 
-		localDimensionsToLoads.clear();
+			for (int i = 0; i < dimensions.tagCount(); i++) {
+				CompoundTag dimensionTag = (CompoundTag) dimensions.tagAt(i);
 
-		for (Map.Entry<String, Tag<?>> entry : tinyChunkLoaderTag.getValue().entrySet()) {
-			final Tag<?> rawTag = entry.getValue();
-			if (!(rawTag instanceof ListTag)) {
-				continue;
+				int dimensionID = dimensionTag.getInteger("id");
+
+				Dimension dimension = Dimension.getDimensionList().get(dimensionID);
+
+				if (dimension == null) {
+					continue;
+				}
+
+				Map<ChunkCoordinate, Integer> localChunkToLoads = new HashMap<>();
+
+				ListTag chunksToLoads = dimensionTag.getList("chunks");
+
+				for (int j = 0; j < chunksToLoads.tagCount(); j++) {
+					CompoundTag chunkTag = (CompoundTag) chunksToLoads.tagAt(j);
+					int chunkX = chunkTag.getInteger("x");
+					int chunkZ = chunkTag.getInteger("z");
+					int currentPing = chunkTag.getByte("p") & 0xff;
+
+					localChunkToLoads.put(new ChunkCoordinate(chunkX, chunkZ), currentPing);
+				}
+
+				localDimensionsToLoads.put(dimension, localChunkToLoads);
 			}
-
-			int dimensionID = Integer.parseInt(entry.getKey());
-
-			Dimension dimension = Dimension.getDimensionList().get(dimensionID);
-
-			Map<ChunkCoordinate, Integer> localChunkToLoads = localDimensionsToLoads.getOrDefault(dimension, new HashMap<>());
-
-			final ListTag chunksToLoads = ((ListTag) rawTag);
-
-			for (int i = 0; i < chunksToLoads.tagCount(); i++) {
-				CompoundTag tag = (CompoundTag) chunksToLoads.tagAt(i);
-				int chunkX = tag.getInteger("x");
-				int chunkZ = tag.getInteger("z");
-				int currentPing = tag.getByte("p") & 0xff;
-
-				localChunkToLoads.put(new ChunkCoordinate(chunkX, chunkZ), currentPing);
-			}
-
-			localDimensionsToLoads.put(dimension, localChunkToLoads);
 		}
-	}
 
-	public Map<Dimension, Map<ChunkCoordinate, Integer>> tinyChunkLoader$getLocalDimensionsToLoads() {
-		return localDimensionsToLoads;
+		ChunkLoaderManager.getInstance().setDimensionToLoads(localDimensionsToLoads);
 	}
 }
-

@@ -5,11 +5,13 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.net.command.CommandManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import turniplabs.halplibe.HalpLibe;
+import turniplabs.halplibe.event.defs.CommonEvents;
 import turniplabs.halplibe.helper.EnvironmentHelper;
-import turniplabs.halplibe.util.GameStartEntrypoint;
+import turniplabs.halplibe.util.dependency.Key;
 
-public class TinyChunkLoader implements ModInitializer, GameStartEntrypoint {
-    public static final String MOD_ID = "tinychunkloader";
+public class TinyChunkLoader implements ModInitializer {
+    public static final String MOD_ID = HalpLibe.registerMod("tinychunkloader");
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	public static int startBlockID = 1910;
@@ -34,6 +36,17 @@ public class TinyChunkLoader implements ModInitializer, GameStartEntrypoint {
 		TinyChunkLoaderConfig.RegisterConfig();
 		TinyChunkLoaderBlocks.RegisterBlocks();
         LOGGER.info("TinyChunkLoader initialized.");
+
+		CommonEvents.RECIPES_NAMESPACE_INIT.listen(Key.of(MOD_ID), () -> new TinyChunkLoaderRecipe().initNamespaces());
+		CommonEvents.RECIPES_READY.listen(Key.of(MOD_ID), () -> new TinyChunkLoaderRecipe().onRecipesReady());
+
+		CommonEvents.AFTER_GAME_START.listen(Key.of(MOD_ID), () -> {
+			try {
+				Class.forName("dan200.computercraft.api.ComputerCraftAPI");
+				registerTurtleUpgrades();
+			} catch (ClassNotFoundException ignored) {
+			}
+		});
     }
 
 	public static void registerServerCommands() {
@@ -41,22 +54,8 @@ public class TinyChunkLoader implements ModInitializer, GameStartEntrypoint {
 	}
 
 	public static void registerClientCommands() {
-		if (EnvironmentHelper.isSinglePlayer()) {
+		if (EnvironmentHelper.isSingleplayerClient()) {
 			CommandManager.registerCommand(new TinyChunkLoaderCommands());
-		}
-	}
-
-	@Override
-	public void beforeGameStart() {
-
-	}
-
-	@Override
-	public void afterGameStart() {
-		try {
-			Class.forName("dan200.computercraft.api.ComputerCraftAPI");
-			registerTurtleUpgrades();
-		} catch (ClassNotFoundException ignored) {
 		}
 	}
 

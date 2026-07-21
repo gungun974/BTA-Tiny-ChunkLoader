@@ -7,33 +7,65 @@ import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
-import dan200.computercraft.shared.util.BlockPos;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import gungun974.tinychunkloader.core.TinyChunkLoader;
 import gungun974.tinychunkloader.core.TinyChunkLoaderBlocks;
 import gungun974.tinychunkloader.helpers.ChunkLoaderManager;
 import gungun974.tinychunkloader.helpers.UUIDHelper;
 import net.minecraft.client.render.TextureManager;
+import net.minecraft.client.render.block.model.BlockModelDispatcher;
+import net.minecraft.client.render.block.model.generic.BlockModelGeneric;
+import net.minecraft.client.render.renderer.GLRenderer;
 import net.minecraft.client.render.tessellator.Tessellator;
+import net.minecraft.client.render.tessellator.TessellatorGeneral;
+import net.minecraft.client.render.texture.stitcher.TextureRegistry;
+import net.minecraft.core.block.Blocks;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.world.World;
+import net.minecraft.core.world.pos.TilePos;
+import net.minecraft.core.world.pos.TilePosc;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.UUID;
 
 public class TurtleChunkloader extends AbstractTurtleUpgrade {
+	@Nullable
+	@Environment(EnvType.CLIENT)
+	private BlockModelGeneric modelLeft;
+	@Nullable
+	@Environment(EnvType.CLIENT)
+	private BlockModelGeneric modelRight;
+	@Nullable
+	@Environment(EnvType.CLIENT)
+	private BlockModelGeneric modelLeftOff;
+	@Nullable
+	@Environment(EnvType.CLIENT)
+	private BlockModelGeneric modelRightOff;
+
+	@Environment(EnvType.CLIENT)
+	private void ensureModels() {
+		if (modelLeft == null) {
+			modelLeft = new BlockModelGeneric(Blocks.STONE, BlockModelDispatcher.loadDataModel("tinychunkloader:item/turtle_chunkloader_upgrade_left").asModel());
+			modelRight = new BlockModelGeneric(Blocks.STONE, BlockModelDispatcher.loadDataModel("tinychunkloader:item/turtle_chunkloader_upgrade_right").asModel());
+			modelLeftOff = new BlockModelGeneric(Blocks.STONE, BlockModelDispatcher.loadDataModel("tinychunkloader:item/turtle_chunkloader_upgrade_left_off").asModel());
+			modelRightOff = new BlockModelGeneric(Blocks.STONE, BlockModelDispatcher.loadDataModel("tinychunkloader:item/turtle_chunkloader_upgrade_right_off").asModel());
+		}
+	}
+
 	public TurtleChunkloader(int id) {
 		super(id, TurtleUpgradeType.PERIPHERAL, TinyChunkLoaderBlocks.CHUNKLOADER);
 	}
 
 	@Override
-	public IPeripheral createPeripheral(@Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side) {
+	public IPeripheral createPeripheral(@NotNull ITurtleAccess turtle, @NotNull TurtleSide side) {
 		return new TurtleChunkloader.Peripheral(turtle);
 	}
 
 	@Override
-	public boolean isItemSuitable(@Nonnull ItemStack stack) {
+	public boolean isItemSuitable(@NotNull ItemStack stack) {
 		if (!TinyChunkLoader.ENABLE_CHUNKLOADER_TURTLE_CRAFT) {
 			return false;
 		}
@@ -42,7 +74,10 @@ public class TurtleChunkloader extends AbstractTurtleUpgrade {
 
 
 	@Override
+	@Environment(EnvType.CLIENT)
 	public void drawTileUpgrade(Tessellator tessellator, TextureManager textureManager, TileTurtle tileEntity, float angle, @NotNull TurtleSide side, float partialTick) {
+		ensureModels();
+
 		boolean success = true;
 		ITurtleAccess turtle = tileEntity.getAccess();
 
@@ -51,30 +86,34 @@ public class TurtleChunkloader extends AbstractTurtleUpgrade {
 			success = turtleNBT.containsKey("success") && turtleNBT.getBoolean("success");
 		}
 
-		if (success) {
-			textureManager.loadTexture("/assets/tinychunkloader/textures/block/face.png").bind();
-		} else {
-			textureManager.loadTexture("/assets/tinychunkloader/textures/block/face_sob.png").bind();
-		}
-		tessellator.startDrawingQuads();
+		byte lightIndex = tileEntity.worldObj.getLightIndex(tileEntity.tilePos, 0);
+		float toolAngle = tileEntity.getToolRenderAngle(side, partialTick);
+
+		BlockModelGeneric model;
 		if (side == TurtleSide.LEFT) {
-			drawUpgradeLeft(tessellator, tileEntity, angle);
+			model = success ? modelLeft : modelLeftOff;
 		} else {
-			drawUpgradeRight(tessellator, tileEntity, angle);
+			model = success ? modelRight : modelRightOff;
 		}
-		tessellator.draw();
+
+		TextureRegistry.worldAtlas.bind();
+		GLRenderer.pushFrame();
+		GLRenderer.modelM4f().rotateX((float) Math.toRadians(-toolAngle));
+		model.renderStandalone((TessellatorGeneral) tessellator, 0, lightIndex);
+		GLRenderer.popFrame();
 	}
 
 	@Override
-	public void drawItemUpgrade(Tessellator tessellator, TextureManager textureManager, @NotNull TurtleSide side) {
-		textureManager.loadTexture("/assets/tinychunkloader/textures/block/face.png").bind();
-		tessellator.startDrawingQuads();
-		if (side == TurtleSide.LEFT) {
-			drawUpgradeLeft(tessellator);
-		} else {
-			drawUpgradeRight(tessellator);
-		}
-		tessellator.draw();
+	@Environment(EnvType.CLIENT)
+	public void drawItemUpgrade(TessellatorGeneral tessellator, byte lightIndex, @NotNull TurtleSide side) {
+		ensureModels();
+
+		BlockModelGeneric model = side == TurtleSide.LEFT ? modelLeft : modelRight;
+
+		TextureRegistry.worldAtlas.bind();
+		GLRenderer.pushFrame();
+		model.renderStandalone(tessellator, 0, lightIndex);
+		GLRenderer.popFrame();
 	}
 
 	@Override
@@ -109,11 +148,11 @@ public class TurtleChunkloader extends AbstractTurtleUpgrade {
 		}
 
 		private World world = null;
-		private BlockPos position = new BlockPos(0, 0, 0);
+		private TilePosc position = new TilePos(0, 0, 0);
 
 		boolean success = true;
 
-		void setLocation(World world, BlockPos position) {
+		void setLocation(World world, TilePosc position) {
 			this.position = position;
 			this.world = world;
 		}
@@ -122,7 +161,7 @@ public class TurtleChunkloader extends AbstractTurtleUpgrade {
 			return world;
 		}
 
-		public BlockPos getPosition() {
+		public TilePosc getPosition() {
 			return world != null ? position : null;
 		}
 
@@ -145,8 +184,8 @@ public class TurtleChunkloader extends AbstractTurtleUpgrade {
 			if (TinyChunkLoader.ENABLE_CHUNKLOADER_TURTLE) {
 				for (double xo = -1f; xo <= 1f; xo++) {
 					for (double zo = -1f; zo <= 1f; zo++) {
-						int currentChunkX = (int) Math.floor((getPosition().x + xo) / 16);
-						int currentChunkZ = (int) Math.floor((getPosition().z + zo) / 16);
+						int currentChunkX = (int) Math.floor((getPosition().x() + xo) / 16);
+						int currentChunkZ = (int) Math.floor((getPosition().z() + zo) / 16);
 
 						for (int i = -(TinyChunkLoader.CHUNKLOADER_TURTLE_RANGE - 1); i <= (TinyChunkLoader.CHUNKLOADER_TURTLE_RANGE - 1); i++) {
 							for (int j = -(TinyChunkLoader.CHUNKLOADER_TURTLE_RANGE - 1); j <= (TinyChunkLoader.CHUNKLOADER_TURTLE_RANGE - 1); j++) {

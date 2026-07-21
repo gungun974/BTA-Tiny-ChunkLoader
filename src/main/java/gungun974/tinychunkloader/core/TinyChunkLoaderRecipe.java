@@ -7,14 +7,12 @@ import net.minecraft.core.data.registry.recipe.RecipeGroup;
 import net.minecraft.core.data.registry.recipe.RecipeSymbol;
 import net.minecraft.core.data.registry.recipe.entry.RecipeEntryCrafting;
 import net.minecraft.core.item.ItemStack;
-import turniplabs.halplibe.util.RecipeEntrypoint;
 
-public class TinyChunkLoaderRecipe implements RecipeEntrypoint {
+public class TinyChunkLoaderRecipe {
 
 	public static TinyChunkLoaderRecipeNamespace TINYCHUNKLOADER = new TinyChunkLoaderRecipeNamespace();
 	public static RecipeGroup<RecipeEntryCrafting<?, ?>> WORKBENCH;
 
-	@Override
 	public void onRecipesReady() {
 		TinyChunkLoader.LOGGER.info("Loading TinyChunkLoader recipes...");
 		resetGroups();
@@ -22,7 +20,6 @@ public class TinyChunkLoaderRecipe implements RecipeEntrypoint {
 		load();
 	}
 
-	@Override
 	public void initNamespaces() {
 		TinyChunkLoader.LOGGER.info("Loading TinyChunkLoader recipe namespaces...");
 		resetGroups();

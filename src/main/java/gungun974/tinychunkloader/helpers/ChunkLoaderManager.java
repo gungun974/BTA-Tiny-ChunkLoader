@@ -1,13 +1,14 @@
 package gungun974.tinychunkloader.helpers;
 
-import gungun974.tinychunkloader.core.ChunkProviderDynamic2;
 import gungun974.tinychunkloader.core.TinyChunkLoader;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.world.chunk.provider.ChunkProviderDynamic;
 import net.minecraft.core.world.Dimension;
 import net.minecraft.core.world.World;
 import net.minecraft.core.world.chunk.ChunkCoordinate;
-import net.minecraft.core.world.chunk.provider.IChunkProvider;
+import net.minecraft.core.world.chunk.provider.ChunkProvider;
+import net.minecraft.core.world.pos.ChunkPos;
 import net.minecraft.server.world.chunk.provider.ChunkProviderServer;
 import turniplabs.halplibe.helper.EnvironmentHelper;
 
@@ -42,7 +43,7 @@ public class ChunkLoaderManager {
 	}
 
 	synchronized public boolean keepChunkLoaded(int chunkX, int chunkZ, World world, UUID owner) {
-		if (EnvironmentHelper.isClientWorld()) {
+		if (EnvironmentHelper.isMultiplayerClient()) {
 			return false;
 		}
 
@@ -93,7 +94,7 @@ public class ChunkLoaderManager {
 	static int PING_TIMEOUT = 10;
 
 	synchronized public void update(World world) {
-		if (EnvironmentHelper.isClientWorld()) {
+		if (EnvironmentHelper.isMultiplayerClient()) {
 			return;
 		}
 
@@ -112,7 +113,7 @@ public class ChunkLoaderManager {
 		Map<ChunkCoordinate, Integer> chunkToLoads = dimensionToLoads.getOrDefault(world.dimension, new HashMap<>());
 		Map<ChunkCoordinate, Integer> updatedChunkToLoads = new HashMap<>(chunkToLoads);
 
-		IChunkProvider chunkProvider = world.getChunkProvider();
+		ChunkProvider chunkProvider = world.getChunkProvider();
 
 		for (Map.Entry<ChunkCoordinate, Integer> entry : chunkToLoads.entrySet()) {
 			ChunkCoordinate coordinate = entry.getKey();
@@ -121,7 +122,7 @@ public class ChunkLoaderManager {
 			if (currentPing < PING_TIMEOUT)  {
 				updatedChunkToLoads.put(coordinate, currentPing + 1);
 
-				if (EnvironmentHelper.isSinglePlayer()) {
+				if (EnvironmentHelper.isSingleplayerClient()) {
 					loadChunkForSP(chunkProvider, coordinate);
 				} else {
 					loadChunkForMP(chunkProvider, coordinate);
@@ -136,7 +137,7 @@ public class ChunkLoaderManager {
 					}
 				});
 
-				if (EnvironmentHelper.isSinglePlayer()) {
+				if (EnvironmentHelper.isSingleplayerClient()) {
 					unloadChunkForSP(chunkProvider, coordinate);
 				} else {
 					unloadChunkForMP(chunkProvider, coordinate);
@@ -148,30 +149,30 @@ public class ChunkLoaderManager {
 	}
 
 	@Environment(EnvType.CLIENT)
-	private static void unloadChunkForSP(IChunkProvider chunkProvider, ChunkCoordinate coordinate) {
-		if (chunkProvider instanceof ChunkProviderDynamic2) {
-			((ChunkProviderDynamic2) chunkProvider).removeFromForceLoaded(coordinate.x, coordinate.z);
+	private static void unloadChunkForSP(ChunkProvider chunkProvider, ChunkCoordinate coordinate) {
+		if (chunkProvider instanceof ChunkProviderDynamic) {
+			((ChunkProviderDynamic) chunkProvider).removeFromForceLoaded(new ChunkPos(coordinate.x, coordinate.z));
 		}
 	}
 
 	@Environment(EnvType.CLIENT)
-	private static void loadChunkForSP(IChunkProvider chunkProvider, ChunkCoordinate coordinate) {
-		if (chunkProvider instanceof ChunkProviderDynamic2) {
-			((ChunkProviderDynamic2) chunkProvider).keepLoaded(coordinate.x, coordinate.z);
+	private static void loadChunkForSP(ChunkProvider chunkProvider, ChunkCoordinate coordinate) {
+		if (chunkProvider instanceof ChunkProviderDynamic) {
+			((ChunkProviderDynamic) chunkProvider).keepLoaded(new ChunkPos(coordinate.x, coordinate.z));
 		}
 	}
 
 	@Environment(EnvType.SERVER)
-	private static void unloadChunkForMP(IChunkProvider chunkProvider, ChunkCoordinate coordinate) {
+	private static void unloadChunkForMP(ChunkProvider chunkProvider, ChunkCoordinate coordinate) {
 		if (chunkProvider instanceof ChunkProviderServer) {
-			((ChunkProviderServer) chunkProvider).dropChunk(coordinate.x, coordinate.z);
+			((ChunkProviderServer) chunkProvider).dropChunk(new ChunkPos(coordinate.x, coordinate.z));
 		}
 	}
 
 	@Environment(EnvType.SERVER)
-	private static void loadChunkForMP(IChunkProvider chunkProvider, ChunkCoordinate coordinate) {
+	private static void loadChunkForMP(ChunkProvider chunkProvider, ChunkCoordinate coordinate) {
 		if (chunkProvider instanceof ChunkProviderServer) {
-			((ChunkProviderServer) chunkProvider).prepareChunk(coordinate.x, coordinate.z);
+			((ChunkProviderServer) chunkProvider).prepareChunk(new ChunkPos(coordinate.x, coordinate.z), true);
 		}
 	}
 

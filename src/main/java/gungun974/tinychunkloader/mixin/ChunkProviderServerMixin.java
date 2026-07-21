@@ -2,6 +2,7 @@ package gungun974.tinychunkloader.mixin;
 
 import gungun974.tinychunkloader.helpers.ChunkLoaderManager;
 import net.minecraft.core.world.chunk.ChunkCoordinate;
+import net.minecraft.core.world.pos.ChunkPos;
 import net.minecraft.server.world.WorldServer;
 import net.minecraft.server.world.chunk.provider.ChunkProviderServer;
 import org.spongepowered.asm.mixin.Final;
@@ -21,13 +22,13 @@ public class ChunkProviderServerMixin {
 	private WorldServer world;
 
 	@Inject(method = "dropChunk", at = @At("HEAD"), cancellable = true)
-	public void protectLoadedChunk(int chunkX, int chunkZ, CallbackInfo ci) {
+	public void protectLoadedChunk(ChunkPos pos, CallbackInfo ci) {
 		Map<ChunkCoordinate, Integer> chunkToLoads = ChunkLoaderManager.getInstance().getDimensionToLoads().getOrDefault(world.dimension, new HashMap<>());
 
 		for (Map.Entry<ChunkCoordinate, Integer> entry : chunkToLoads.entrySet()) {
 			ChunkCoordinate coordinate = entry.getKey();
 
-			if (chunkX == coordinate.x && chunkZ == coordinate.z) {
+			if (pos.x == coordinate.x && pos.z == coordinate.z) {
 				ci.cancel();
 				return;
 			}

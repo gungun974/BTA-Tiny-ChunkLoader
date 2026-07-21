@@ -8,12 +8,11 @@
     "EntityMinecartMixin",
     "ItemToolPickaxeMixin",
     "LevelDataMixin",
-    "SaveHandlerBaseMixin",
     "WorldMixin"
   ],
   "client": [
     "EntityRendererMinecartMixin",
-    "MinecraftMixin"
+    "WorldClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -18,17 +18,8 @@
 		"main": [
 			"gungun974.tinychunkloader.core.TinyChunkLoader"
 		],
-		"initModels": [
-			"gungun974.tinychunkloader.core.TinyChunkLoaderModels"
-		],
-		"beforeGameStart": [
-			"gungun974.tinychunkloader.core.TinyChunkLoader"
-		],
-		"afterGameStart": [
-			"gungun974.tinychunkloader.core.TinyChunkLoader"
-		],
-		"recipesReady": [
-			"gungun974.tinychunkloader.core.TinyChunkLoaderRecipe"
+		"client": [
+			"gungun974.tinychunkloader.core.TinyChunkLoaderClient"
 		]
 	},
 	"mixins": [
@@ -36,8 +27,9 @@
 	],
 	"depends": {
 		"minecraft": "*",
-		"fabricloader": ">=0.15.5",
-		"halplibe": ">=5.2.4"
+		"fabricloader": ">=${fabricloader}",
+		"halplibe": ">=${halplibe}",
+		"java": ">=${java}"
 	},
 	"suggests": {
 		"computercraft": ">=1.96.9"

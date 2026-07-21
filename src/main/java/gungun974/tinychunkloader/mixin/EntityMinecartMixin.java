@@ -103,7 +103,7 @@ public abstract class EntityMinecartMixin extends Entity {
 
 	@Inject(method = "tick", at = @At("TAIL"))
 	public void handleChunkLoading(CallbackInfo ci) {
-		if (EnvironmentHelper.isClientWorld()) {
+		if (EnvironmentHelper.isMultiplayerClient()) {
 			return;
 		}
 
